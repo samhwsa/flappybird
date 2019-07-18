@@ -1,4 +1,4 @@
-import sys, pygame, random,
+import sys, pygame, random
 from pygame.locals import *
 from bird import *
 from platforms import *
@@ -23,7 +23,6 @@ platforms = pygame.sprite.Group()
 startPos = (width/8, height/2)
 player = bird(startPos)
 gapSize = 200
-ticks = 0
 loopCount = 0
 score = 1
 
@@ -44,7 +43,7 @@ def lose():
                     return
 
 def main():
-    global Ticks, loopCount
+    global loopCount
     while True:
         clock.tick(60)
         if loopCount % 90 == 0:
@@ -53,10 +52,25 @@ def main():
             platforms.add(Platform((width + 100, toppos), True))
 
         for event in pygame.event.get():
+            if event.type == QUIT:
+                sys.exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
-                    platforms.empty()
-                    return
+                    player.speed[1] = -10
+
+        screen.fill(color)
+        Player.update()
+        platforms.update()
+        gets_hit = pygame.sprite.spritecollide(Player, platforms, False)
+            or Player.rect.center[1] > height
+        screen.blit(background, [0, 0])
+        platforms.draw(screen)
+        screen.blit(Player.image, Player.rect)
+        pygame.display.flip()
+        loopCount += 1
+
+        if gets_hit:
+            lose()
 
 
 if __name__=='__main__':
