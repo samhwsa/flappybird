@@ -1,7 +1,7 @@
 import sys, pygame, random
 from pygame.locals import *
-from bird import *
-from platforms import *
+from bird import bird
+from platforms import Platform
 
 
 pygame.init()
@@ -28,7 +28,7 @@ score = 1
 
 def lose():
     font = pygame.font.SysFont(None, 70)
-    text.font.render("You Died!", True, (255, 0, 0))
+    text = font.render("You Died!", True, (255, 0, 0))
     text_rect = text.get_rect()
     text_rect.center = (width/2, height/2)
     while True:
@@ -59,13 +59,14 @@ def main():
                     player.speed[1] = -10
 
         screen.fill(color)
-        Player.update()
+        player.update()
         platforms.update()
-        gets_hit = pygame.sprite.spritecollide(Player, platforms, False)
-            or Player.rect.center[1] > height
+        gets_hit = pygame.sprite.spritecollide(player, platforms, False) \
+            or player.rect.center[1] > height
+
         screen.blit(background, [0, 0])
         platforms.draw(screen)
-        screen.blit(Player.image, Player.rect)
+        screen.blit(player.image, player.rect)
         pygame.display.flip()
         loopCount += 1
 
