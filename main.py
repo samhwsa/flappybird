@@ -2,6 +2,7 @@ import sys, pygame, random
 from pygame.locals import *
 from bird import bird
 from platforms import Platform
+from score import scoreCounter
 
 
 pygame.init()
@@ -63,6 +64,8 @@ def main():
         platforms.update()
         gets_hit = pygame.sprite.spritecollide(player, platforms, False) \
             or player.rect.center[1] > height
+
+        gets_score = pygame.sprite.spritecollide(player, scoreCounter, False)
 
         screen.blit(background, [0, 0])
         platforms.draw(screen)
