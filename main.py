@@ -3,6 +3,7 @@ from pygame.locals import *
 from bird import bird
 from platforms import Platform
 from score import scoreCounter
+from coin import coinItem
 
 
 pygame.init()
@@ -21,11 +22,12 @@ background = pygame.transform.scale(background, (width, height))
 
 #game variables
 platforms = pygame.sprite.Group()
+scorecounters = pygame.sprite.Group()
 startPos = (width/8, height/2)
 player = bird(startPos)
 gapSize = 200
 loopCount = 0
-score = 1
+points = 1
 
 def lose():
     font = pygame.font.SysFont(None, 70)
@@ -43,14 +45,22 @@ def lose():
                     platforms.empty()
                     return
 
+def displayScore(score):
+    font = pygame.font.SysFont(None, 70)
+    text = font.render("Score: " + str(points), True, (255, 0, 0))
+    text_rect = text.get_rect()
+    text_rect.center = (width / 2, height / 2)
+    screen.blit(background, [0, 0])
+
 def main():
-    global loopCount
+    global loopCount, points
     while True:
         clock.tick(60)
         if loopCount % 90 == 0:
             toppos = random.randint(0, height/2) - 400
             platforms.add(Platform((width + 100, toppos + gapSize + 800)))
             platforms.add(Platform((width + 100, toppos), True))
+            scorecounters.add(scoreCounter((width + 100, 0)))
 
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -62,19 +72,32 @@ def main():
         screen.fill(color)
         player.update()
         platforms.update()
+        scorecounters.update()
+
+
         gets_hit = pygame.sprite.spritecollide(player, platforms, False) \
             or player.rect.center[1] > height
 
-        gets_score = pygame.sprite.spritecollide(player, scoreCounter, False)
+        gets_score = pygame.sprite.spritecollide(player, scorecounters, False)
+
+        if gets_score.__len__() > 0:
+            points += 1
+            scorecounters.remove(gets_score)
 
         screen.blit(background, [0, 0])
+        scorecounters.draw(screen)
         platforms.draw(screen)
         screen.blit(player.image, player.rect)
+        #displayScore(points)
         pygame.display.flip()
         loopCount += 1
 
+
+
+
         if gets_hit:
             lose()
+
 
 
 if __name__=='__main__':

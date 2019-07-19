@@ -3,8 +3,8 @@ import pygame
 class scoreCounter(pygame.sprite.Sprite):
     def __init__(self, pos):
         super().__init__()
-        self.image = pygame.Surface((1,10000))
-        self.image.set_alpha(0)
+        self.image = pygame.Surface((1, 10000))
+        #self.image.set_alpha(0)
         self.image.fill((0,0,0,0))
         self.rect = self.image.get_rect()
         self.rect.center = pos

@@ -1,6 +1,6 @@
 import pygame, random
 
-class coin(pygame.sprite.Sprite):
+class coinItem(pygame.sprite.Sprite):
 
     def __init__(self,pos):
         super().__init__()
@@ -9,6 +9,4 @@ class coin(pygame.sprite.Sprite):
         self.image = pygame.transform.smoothscale(self.image, (scale, scale))
         self.rect = self.image.get_rect()
         self.rect.center = pos
-
-        position = random.randint(0, int(screen_info.current_h))
-        self.image = pygame.transform.position
+        self.speed = pygame.math.Vector2(-6, 0)
