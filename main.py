@@ -23,6 +23,7 @@ background = pygame.transform.scale(background, (width, height))
 #game variables
 platforms = pygame.sprite.Group()
 scorecounters = pygame.sprite.Group()
+coins = pygame.sprite.Group()
 startPos = (width/8, height/2)
 player = bird(startPos)
 gapSize = 200
@@ -35,7 +36,7 @@ def lose():
     text_rect = text.get_rect()
     text_rect.center = (width/2, height/2)
     while True:
-        clock.tick(60)
+        clock.tick(40)
         screen.fill(color)
         screen.blit(text, text_rect)
         pygame.display.flip()
@@ -49,8 +50,8 @@ def displayScore(score):
     font = pygame.font.SysFont(None, 70)
     text = font.render("Score: " + str(points), True, (255, 0, 0))
     text_rect = text.get_rect()
-    text_rect.center = (width / 2, height / 2)
-    screen.blit(background, [0, 0])
+    text_rect.center = (width / 2, height / 8)
+    screen.blit(text, text_rect)
 
 def main():
     global loopCount, points
@@ -62,6 +63,9 @@ def main():
             platforms.add(Platform((width + 100, toppos), True))
             scorecounters.add(scoreCounter((width + 100, 0)))
 
+        elif loopCount % 30 == 0 and random.randint(0, 2) == 1:
+            coins.add(coinItem((width + 100, random.randint(height / 4, height - (height / 4)))))
+
         for event in pygame.event.get():
             if event.type == QUIT:
                 sys.exit()
@@ -72,6 +76,7 @@ def main():
         screen.fill(color)
         player.update()
         platforms.update()
+        coins.update()
         scorecounters.update()
 
 
@@ -80,6 +85,14 @@ def main():
 
         gets_score = pygame.sprite.spritecollide(player, scorecounters, False)
 
+        gets_coins = pygame.sprite.spritecollide(player, coins, False)
+
+
+        if gets_coins.__len__() > 0:
+            points += 3
+            coins.remove(gets_coins)
+
+
         if gets_score.__len__() > 0:
             points += 1
             scorecounters.remove(gets_score)
@@ -87,8 +100,9 @@ def main():
         screen.blit(background, [0, 0])
         scorecounters.draw(screen)
         platforms.draw(screen)
+        coins.draw(screen)
         screen.blit(player.image, player.rect)
-        #displayScore(points)
+        displayScore(points)
         pygame.display.flip()
         loopCount += 1
 
